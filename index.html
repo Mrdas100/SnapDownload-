@@ -3,23 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SnapDL – حمّل من سناب شات</title>
+<title>SnapDL – تحميل سناب شات</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --yellow: #FFFC00;
-    --black: #0a0a0a;
-    --dark: #111111;
-    --card: #181818;
-    --border: #2a2a2a;
+    --y: #FFFC00;
+    --bg: #0a0a0a;
+    --card: #161616;
+    --border: #252525;
     --text: #f0f0f0;
-    --muted: #888;
+    --muted: #777;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background: var(--black);
+    background: var(--bg);
     color: var(--text);
     font-family: 'Tajawal', sans-serif;
     min-height: 100vh;
@@ -27,628 +24,499 @@
     flex-direction: column;
     align-items: center;
   }
-
-  /* Animated BG */
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(255,252,0,0.07) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,252,0,0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 5%, rgba(255,252,0,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 85% 85%, rgba(255,252,0,0.04) 0%, transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap {
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:660px;
+    padding:48px 20px 80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
   }
 
-  .container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 640px;
-    padding: 40px 20px 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
+  .ghost { width:70px; height:70px; animation:float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  h1 { font-size:2.8rem; font-weight:900; letter-spacing:-1px; }
+  h1 span { color:var(--y); }
+  .sub { color:var(--muted); font-size:.95rem; }
+
+  .card {
+    width:100%;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
   }
-
-  /* Header */
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    text-align: center;
+  .row { display:flex; gap:10px; }
+  input[type=url] {
+    flex:1;
+    background:var(--bg);
+    border:1.5px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+    color:var(--text);
+    font-family:'Tajawal',sans-serif;
+    font-size:.95rem;
+    outline:none;
+    direction:ltr;
+    transition:border-color .2s;
   }
-
-  .ghost-icon {
-    width: 72px;
-    height: 72px;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
-  }
-
-  .brand {
-    font-size: 2.8rem;
-    font-weight: 900;
-    letter-spacing: -1px;
-    line-height: 1;
-  }
-
-  .brand span {
-    color: var(--yellow);
-  }
-
-  .tagline {
-    color: var(--muted);
-    font-size: 1rem;
-    font-weight: 400;
-  }
-
-  /* Input Card */
-  .input-card {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .url-input {
-    width: 100%;
-    background: var(--black);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 18px;
-    color: var(--text);
-    font-family: 'Tajawal', sans-serif;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-    direction: ltr;
-    text-align: left;
-  }
-
-  .url-input::placeholder { color: var(--muted); }
-  .url-input:focus { border-color: var(--yellow); }
-
+  input[type=url]:focus { border-color:var(--y); }
+  input::placeholder { color:var(--muted); }
   .paste-btn {
-    flex-shrink: 0;
-    background: var(--dark);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'Tajawal', sans-serif;
-    font-size: 0.85rem;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
+    flex-shrink:0;
+    background:var(--bg);
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-family:'Tajawal',sans-serif;
+    font-size:.85rem;
+    padding:0 16px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:all .2s;
+  }
+  .paste-btn:hover { border-color:var(--y); color:var(--y); }
+  .go-btn {
+    width:100%;
+    background:var(--y);
+    color:#000;
+    border:none;
+    border-radius:12px;
+    padding:16px;
+    font-family:'Tajawal',sans-serif;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:all .2s;
+  }
+  .go-btn:hover { background:#fff; box-shadow:0 8px 28px rgba(255,252,0,.18); transform:translateY(-1px); }
+  .go-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+  .log-box {
+    width:100%;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px 20px;
+    font-size:.85rem;
+    color:var(--muted);
+    display:none;
+    line-height:2;
+  }
+  .lstep { display:flex; align-items:center; gap:8px; }
+  .lstep.ok { color:#6fff6f; }
+  .lstep.fail { color:#ff6b6b; }
+  .lstep.active { color:var(--y); }
+
+  .preview-wrap {
+    width:100%;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    display:none;
+    max-height:380px;
+    background:#000;
+  }
+  .preview-wrap video, .preview-wrap img {
+    width:100%; max-height:380px; object-fit:contain; display:block;
   }
 
-  .paste-btn:hover {
-    border-color: var(--yellow);
-    color: var(--yellow);
+  .results { width:100%; display:none; flex-direction:column; gap:10px; }
+  .res-title { font-size:.8rem; color:var(--muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+  .item {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    transition:border-color .2s;
+  }
+  .item:hover { border-color:rgba(255,252,0,.3); }
+  .item-left { display:flex; align-items:center; gap:12px; }
+  .ico {
+    width:42px; height:42px;
+    background:rgba(255,252,0,.1);
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem; flex-shrink:0;
+  }
+  .item-label { font-weight:700; font-size:.95rem; }
+  .item-qual { color:var(--muted); font-size:.8rem; margin-top:2px; }
+  .dl-btn {
+    background:var(--y);
+    color:#000;
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:.85rem;
+    padding:9px 20px;
+    border-radius:9px;
+    transition:all .2s;
+    flex-shrink:0;
+    white-space:nowrap;
+    cursor:pointer;
+    border:none;
+  }
+  .dl-btn:hover { background:#fff; }
+
+  .err {
+    width:100%;
+    background:rgba(255,60,60,.08);
+    border:1px solid rgba(255,60,60,.2);
+    border-radius:12px;
+    padding:14px 18px;
+    color:#ff7070;
+    font-size:.9rem;
+    display:none;
+    text-align:center;
+    line-height:1.8;
   }
 
-  .download-btn {
-    width: 100%;
-    background: var(--yellow);
-    color: #000;
-    border: none;
-    border-radius: 12px;
-    padding: 16px;
-    font-family: 'Tajawal', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  .howto {
+    width:100%;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
   }
-
-  .download-btn:hover {
-    background: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(255,252,0,0.2);
+  .howto-title { color:var(--y); font-size:1rem; font-weight:700; }
+  .srow { display:flex; gap:12px; align-items:flex-start; }
+  .sn {
+    width:26px; height:26px;
+    background:rgba(255,252,0,.12);
+    border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.78rem; font-weight:900; color:var(--y); flex-shrink:0;
   }
+  .st { font-size:.9rem; color:var(--muted); line-height:1.6; }
+  .st strong { color:var(--text); }
 
-  .download-btn:active { transform: translateY(0); }
-  .download-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-  /* Loading */
-  .spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(0,0,0,0.2);
-    border-top-color: #000;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: none;
+  .spin {
+    width:17px; height:17px;
+    border:2.5px solid rgba(0,0,0,.25);
+    border-top-color:#000;
+    border-radius:50%;
+    animation:spin .6s linear infinite;
+    display:none;
   }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Results */
-  .results {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    display: none;
-  }
-
-  .results-title {
-    font-size: 0.85rem;
-    color: var(--muted);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .result-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    transition: border-color 0.2s;
-  }
-
-  .result-item:hover { border-color: rgba(255,252,0,0.3); }
-
-  .result-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .result-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255,252,0,0.1);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-
-  .result-label {
-    font-weight: 700;
-    font-size: 0.95rem;
-  }
-
-  .result-quality {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .dl-link {
-    background: var(--yellow);
-    color: #000;
-    text-decoration: none;
-    font-family: 'Tajawal', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    padding: 8px 18px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
-  .dl-link:hover {
-    background: #fff;
-    transform: scale(1.03);
-  }
-
-  /* Error */
-  .error-box {
-    width: 100%;
-    background: rgba(255, 60, 60, 0.08);
-    border: 1px solid rgba(255,60,60,0.25);
-    border-radius: 12px;
-    padding: 14px 18px;
-    color: #ff6b6b;
-    font-size: 0.9rem;
-    display: none;
-    text-align: center;
-  }
-
-  /* How-to */
-  .how-to {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .how-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--yellow);
-  }
-
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .step {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-  }
-
-  .step-num {
-    width: 28px;
-    height: 28px;
-    background: rgba(255,252,0,0.12);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: 900;
-    color: var(--yellow);
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .step-text {
-    font-size: 0.92rem;
-    line-height: 1.6;
-    color: var(--muted);
-  }
-
-  .step-text strong { color: var(--text); }
-
-  /* Footer */
-  footer {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.8rem;
-    padding: 20px;
-  }
-
-  /* Thumbnail */
-  .thumb-wrap {
-    width: 100%;
-    display: none;
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    max-height: 320px;
-  }
-
-  .thumb-wrap img,
-  .thumb-wrap video {
-    width: 100%;
-    height: auto;
-    max-height: 320px;
-    object-fit: contain;
-    background: #000;
-    display: block;
-  }
-
-  @media (max-width: 480px) {
-    .brand { font-size: 2.2rem; }
-  }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  footer { position:relative; z-index:1; color:var(--muted); font-size:.78rem; padding:16px; text-align:center; }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
-
-  <!-- Header -->
-  <div class="header">
-    <svg class="ghost-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+    <svg class="ghost" viewBox="0 0 100 100" fill="none">
       <path d="M50 10C32.3 10 18 24.3 18 42v34l10-8 10 8 10-8 10 8 10-8 10 8V42C78 24.3 63.7 10 50 10z" fill="#FFFC00"/>
-      <circle cx="38" cy="42" r="5" fill="#0a0a0a"/>
-      <circle cx="62" cy="42" r="5" fill="#0a0a0a"/>
-      <circle cx="40" cy="40" r="2" fill="white"/>
-      <circle cx="64" cy="40" r="2" fill="white"/>
+      <circle cx="38" cy="42" r="5" fill="#0a0a0a"/><circle cx="62" cy="42" r="5" fill="#0a0a0a"/>
+      <circle cx="40" cy="40" r="2" fill="white"/><circle cx="64" cy="40" r="2" fill="white"/>
       <path d="M40 55 Q50 63 60 55" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
     </svg>
-    <div class="brand">Snap<span>DL</span></div>
-    <div class="tagline">حمّل فيديوهات وصور سناب شات بسهولة</div>
+    <h1>Snap<span>DL</span></h1>
+    <div class="sub">أعلى جودة · فيديو وصور · مباشرة</div>
   </div>
 
-  <!-- Input -->
-  <div class="input-card">
-    <div class="input-wrap">
-      <input class="url-input" type="url" id="urlInput" placeholder="https://www.snapchat.com/add/..." />
+  <div class="card">
+    <div class="row">
+      <input type="url" id="urlIn" placeholder="https://www.snapchat.com/spotlight/..." />
       <button class="paste-btn" id="pasteBtn">📋 لصق</button>
     </div>
-    <button class="download-btn" id="fetchBtn">
-      <div class="spinner" id="spinner"></div>
-      <span id="btnText">⬇ تحميل</span>
+    <button class="go-btn" id="goBtn">
+      <div class="spin" id="spin"></div>
+      <span id="btnTxt">⬇ تحميل بأعلى جودة</span>
     </button>
   </div>
 
-  <!-- Error -->
-  <div class="error-box" id="errorBox"></div>
+  <div class="log-box" id="logBox"></div>
+  <div class="err" id="errBox"></div>
+  <div class="preview-wrap" id="previewWrap"></div>
 
-  <!-- Preview -->
-  <div class="thumb-wrap" id="thumbWrap"></div>
-
-  <!-- Results -->
   <div class="results" id="results">
-    <div class="results-title">روابط التحميل</div>
-    <div id="resultsList"></div>
+    <div class="res-title">روابط التحميل</div>
+    <div id="resList"></div>
   </div>
 
-  <!-- How To -->
-  <div class="how-to">
-    <div class="how-title">🔑 كيف تحصل على رابط سناب؟</div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">افتح <strong>سناب شات</strong> على جوالك وانتقل للمحتوى الذي تريد تحميله</div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">اضغط على <strong>الثلاث نقاط ⋯</strong> أو أيقونة المشاركة</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">اختر <strong>"نسخ الرابط"</strong> أو Share Link</div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-text">الصق الرابط في الخانة أعلاه واضغط <strong>تحميل</strong></div>
-      </div>
-    </div>
+  <div class="howto">
+    <div class="howto-title">📌 كيف تحصل على الرابط؟</div>
+    <div class="srow"><div class="sn">1</div><div class="st">افتح <strong>سناب شات</strong> وانتقل للمحتوى</div></div>
+    <div class="srow"><div class="sn">2</div><div class="st">اضغط <strong>⋯ أو زر المشاركة</strong></div></div>
+    <div class="srow"><div class="sn">3</div><div class="st">اختر <strong>"نسخ الرابط"</strong></div></div>
+    <div class="srow"><div class="sn">4</div><div class="st">الصقه هنا واضغط <strong>تحميل</strong></div></div>
+    <div class="srow"><div class="sn">⚠</div><div class="st" style="color:#ffaa44">يعمل مع <strong>المحتوى العام فقط</strong> — Spotlight، قصص عامة، بروفايلات عامة</div></div>
   </div>
 
 </div>
-
-<footer>SnapDL — للاستخدام الشخصي فقط · جميع الحقوق محفوظة لأصحابها</footer>
+<footer>SnapDL — للاستخدام الشخصي · المحتوى حقوق أصحابه</footer>
 
 <script>
-const urlInput = document.getElementById('urlInput');
-const fetchBtn = document.getElementById('fetchBtn');
-const pasteBtn = document.getElementById('pasteBtn');
-const spinner = document.getElementById('spinner');
-const btnText = document.getElementById('btnText');
-const results = document.getElementById('results');
-const resultsList = document.getElementById('resultsList');
-const errorBox = document.getElementById('errorBox');
-const thumbWrap = document.getElementById('thumbWrap');
+const urlIn    = document.getElementById('urlIn');
+const goBtn    = document.getElementById('goBtn');
+const spinEl   = document.getElementById('spin');
+const btnTxt   = document.getElementById('btnTxt');
+const logBox   = document.getElementById('logBox');
+const errBox   = document.getElementById('errBox');
+const prevWrap = document.getElementById('previewWrap');
+const resWrap  = document.getElementById('results');
+const resList  = document.getElementById('resList');
 
-pasteBtn.addEventListener('click', async () => {
-  try {
-    const text = await navigator.clipboard.readText();
-    urlInput.value = text;
-    urlInput.focus();
-  } catch {
-    urlInput.focus();
-  }
-});
+document.getElementById('pasteBtn').onclick = async () => {
+  try { urlIn.value = await navigator.clipboard.readText(); } catch {}
+  urlIn.focus();
+};
+urlIn.addEventListener('keydown', e => { if (e.key === 'Enter') goBtn.click(); });
 
+// ── UI helpers ──
 function setLoading(v) {
-  fetchBtn.disabled = v;
-  spinner.style.display = v ? 'block' : 'none';
-  btnText.textContent = v ? 'جاري المعالجة...' : '⬇ تحميل';
+  goBtn.disabled = v;
+  spinEl.style.display = v ? 'block' : 'none';
+  btnTxt.textContent = v ? 'جاري المعالجة...' : '⬇ تحميل بأعلى جودة';
 }
 
-function showError(msg) {
-  errorBox.style.display = 'block';
-  errorBox.textContent = msg;
-  results.style.display = 'none';
-  thumbWrap.style.display = 'none';
-  thumbWrap.innerHTML = '';
+let logLines = [];
+function resetLog() { logLines = []; logBox.style.display = 'none'; logBox.innerHTML = ''; }
+function addLog(msg, st = 'active') { logLines.push({msg, st}); renderLog(); logBox.style.display = 'block'; }
+function setLogSt(idx, st) { if (logLines[idx]) logLines[idx].st = st; renderLog(); }
+function renderLog() {
+  logBox.innerHTML = logLines.map(l => {
+    const ic = l.st==='ok'?'✅':l.st==='fail'?'❌':'⏳';
+    return `<div class="lstep ${l.st}">${ic} ${l.msg}</div>`;
+  }).join('');
 }
 
-function hideError() {
-  errorBox.style.display = 'none';
+function showErr(html) { errBox.style.display='block'; errBox.innerHTML=html; }
+function hideErr() { errBox.style.display='none'; }
+
+// ── CORS proxies ──
+const PROXIES = [
+  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://thingproxy.freeboard.io/fetch/${u}`,
+];
+
+async function pFetch(url, opts={}) {
+  for (const mk of PROXIES) {
+    try {
+      const r = await fetch(mk(url), {...opts, signal: AbortSignal.timeout(13000)});
+      if (r.ok) return r;
+    } catch {}
+  }
+  throw new Error('PROXY_FAIL');
 }
 
-function showResults(items) {
-  resultsList.innerHTML = '';
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'result-item';
-    el.innerHTML = `
-      <div class="result-info">
-        <div class="result-icon">${item.type === 'video' ? '🎬' : '🖼️'}</div>
+// ── Extract media from HTML ──
+function extractMedia(html) {
+  const items = [];
+  const seen  = new Set();
+
+  function add(type, rawUrl, label, quality) {
+    if (!rawUrl || !rawUrl.startsWith('http')) return;
+    const url = rawUrl.replace(/&amp;/g,'&').split(/["' <>]/)[0];
+    const key = url.slice(-60);
+    if (seen.has(key)) return;
+    seen.add(key);
+    items.push({type, url, label, quality});
+  }
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  // Meta tags
+  const og = (p) => doc.querySelector(`meta[property="${p}"], meta[name="${p}"]`)?.content;
+  ['og:video','og:video:url','og:video:secure_url','twitter:player:stream'].forEach(p => {
+    const v = og(p); if (v) add('video', v, 'فيديو', 'أعلى جودة');
+  });
+  const oimg = og('og:image'); if (oimg) add('image', oimg, 'صورة', 'أعلى جودة');
+
+  // JSON-LD
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+    try {
+      const scan = o => {
+        if (!o || typeof o !== 'object') return;
+        const isVid = String(o['@type']||'').toLowerCase().includes('video');
+        ['contentUrl','url','thumbnailUrl','image','videoUrl'].forEach(k => {
+          if (typeof o[k] === 'string') add(isVid || o[k].includes('.mp4') ? 'video' : 'image', o[k], isVid ? 'فيديو' : 'صورة', 'أعلى جودة');
+        });
+        Object.values(o).forEach(v => typeof v === 'object' && scan(v));
+      };
+      scan(JSON.parse(s.textContent));
+    } catch {}
+  });
+
+  // Regex
+  (html.match(/https?:\/\/[^\s"'<>\\]+\.mp4[^\s"'<>\\]*/g)||[]).forEach(u=>add('video',u,'فيديو','HD'));
+  (html.match(/https?:\/\/[^\s"'<>\\]+\.(jpg|jpeg|png|webp)[^\s"'<>\\]*/g)||[]).forEach(u=>add('image',u,'صورة','HD'));
+
+  // Snap CDN
+  (html.match(/https?:\/\/[^\s"'<>\\]*(?:sc-cdn\.net|snap\.com\/p|snapchat\.net)[^\s"'<>\\]*/g)||[]).forEach(u=>{
+    if (/video|\.mp4/i.test(u)) add('video',u,'فيديو Snap CDN','أعلى جودة');
+    else if (/image|\.jpg|\.png/i.test(u)) add('image',u,'صورة Snap CDN','أعلى جودة');
+  });
+
+  // Sort videos first
+  return [...items.filter(i=>i.type==='video'), ...items.filter(i=>i.type==='image')];
+}
+
+// ── Method 1: snapsave ──
+async function mSnapsave(url) {
+  const fd = new FormData(); fd.append('url', url); fd.append('lang', 'en');
+  const r = await pFetch('https://snapsave.app/action.php', {method:'POST', body:fd});
+  return extractMedia(await r.text());
+}
+
+// ── Method 2: savefrom ──
+async function mSavefrom(url) {
+  const r = await pFetch(`https://worker.sf-tools.com/savefrom.php?sf_url=${encodeURIComponent(url)}`, {
+    headers:{'SF-Worker-Ver':'3.0.2'}
+  });
+  const j = await r.json().catch(()=>null);
+  if (!j?.url) return [];
+  return (Array.isArray(j.url)?j.url:[j.url])
+    .filter(u=>u?.url)
+    .map(u=>({type:'video', url:u.url, label:'فيديو', quality:u.name||'HD'}));
+}
+
+// ── Method 3: Direct page ──
+async function mDirect(url) {
+  const r = await pFetch(url);
+  return extractMedia(await r.text());
+}
+
+// ── Method 4: snapdl.net API ──
+async function mSnapdl(url) {
+  const r = await pFetch(`https://snapdl.net/api/?url=${encodeURIComponent(url)}`);
+  const j = await r.json().catch(()=>null);
+  if (!j) return [];
+  const items = [];
+  if (j.video) items.push({type:'video', url:j.video, label:'فيديو', quality:'أعلى جودة'});
+  if (j.image) items.push({type:'image', url:j.image, label:'صورة', quality:'أعلى جودة'});
+  return items;
+}
+
+// ── Dedup ──
+function dedup(arr) {
+  const s = new Set();
+  return arr.filter(i => { const k=i.url.slice(-55); if(s.has(k))return false; s.add(k); return true; });
+}
+
+// ── Render results ──
+function renderResults(items) {
+  resList.innerHTML = '';
+  items.forEach(it => {
+    const d = document.createElement('div');
+    d.className = 'item';
+    d.innerHTML = `
+      <div class="item-left">
+        <div class="ico">${it.type==='video'?'🎬':'🖼️'}</div>
         <div>
-          <div class="result-label">${item.label}</div>
-          <div class="result-quality">${item.quality || ''}</div>
+          <div class="item-label">${it.label}</div>
+          <div class="item-qual">${it.quality}</div>
         </div>
       </div>
-      <a class="dl-link" href="${item.url}" target="_blank" download>تحميل</a>
+      <button class="dl-btn">⬇ تحميل</button>
     `;
-    resultsList.appendChild(el);
+    const btn = d.querySelector('.dl-btn');
+    btn.onclick = async () => {
+      btn.textContent = '⏳';
+      try {
+        const resp = await fetch(it.url);
+        const blob = await resp.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = it.type==='video' ? `snap_${Date.now()}.mp4` : `snap_${Date.now()}.jpg`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        btn.textContent = '✅ تم';
+        setTimeout(()=>btn.textContent='⬇ تحميل', 3000);
+      } catch {
+        window.open(it.url, '_blank');
+        btn.textContent = '⬇ تحميل';
+      }
+    };
+    resList.appendChild(d);
   });
-  results.style.display = 'flex';
+  resWrap.style.display = 'flex';
 }
 
-async function fetchMedia(url) {
-  // Try snapsave API via CORS proxy
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://snapsave.app/action.php')}`;
-  
-  const formData = new FormData();
-  formData.append('url', url);
-  formData.append('lang', 'ar');
-
-  const res = await fetch(proxyUrl, {
-    method: 'POST',
-    body: formData
-  });
-
-  if (!res.ok) throw new Error('فشل الاتصال بالخادم');
-
-  const html = await res.text();
-  return parseResults(html, url);
-}
-
-function parseResults(html, originalUrl) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  const items = [];
-
-  // Look for video/image download links
-  doc.querySelectorAll('a[href]').forEach(a => {
-    const href = a.href || a.getAttribute('href');
-    if (!href || href === '#') return;
-    const text = a.textContent.trim().toLowerCase();
-
-    if (href.includes('.mp4') || href.includes('video') || text.includes('hd') || text.includes('sd') || text.includes('video')) {
-      items.push({
-        type: 'video',
-        label: 'فيديو',
-        quality: text.includes('hd') ? 'جودة عالية HD' : text.includes('sd') ? 'جودة عادية SD' : 'فيديو',
-        url: href
-      });
-    } else if (href.includes('.jpg') || href.includes('.jpeg') || href.includes('.png') || href.includes('.webp') || text.includes('image') || text.includes('photo')) {
-      items.push({
-        type: 'image',
-        label: 'صورة',
-        quality: '',
-        url: href
-      });
-    }
-  });
-
-  // Also look for direct media links in the HTML
-  const videoMatches = html.match(/https?:\/\/[^"' ]+\.mp4[^"' ]*/g) || [];
-  const imageMatches = html.match(/https?:\/\/[^"' ]+\.(jpg|jpeg|png|webp)[^"' ]*/g) || [];
-
-  videoMatches.forEach(url => {
-    if (!items.find(i => i.url === url)) {
-      items.push({ type: 'video', label: 'فيديو', quality: 'تحميل مباشر', url });
-    }
-  });
-
-  imageMatches.forEach(url => {
-    if (!items.find(i => i.url === url)) {
-      items.push({ type: 'image', label: 'صورة', quality: '', url });
-    }
-  });
-
-  return items;
-}
-
-async function tryDirectSnap(url) {
-  // For public Snap spotlight/story URLs, try extracting og:video meta
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-  const res = await fetch(proxyUrl);
-  if (!res.ok) throw new Error('تعذّر الوصول للرابط');
-  const html = await res.text();
-
-  const items = [];
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  // og:video
-  const ogVideo = doc.querySelector('meta[property="og:video"], meta[name="og:video"]');
-  const ogImage = doc.querySelector('meta[property="og:image"], meta[name="og:image"]');
-  const twitterPlayer = doc.querySelector('meta[name="twitter:player:stream"]');
-
-  if (ogVideo) items.push({ type: 'video', label: 'فيديو', quality: 'جودة عالية', url: ogVideo.content });
-  if (twitterPlayer) items.push({ type: 'video', label: 'فيديو', quality: 'جودة عالية', url: twitterPlayer.content });
-  if (ogImage) items.push({ type: 'image', label: 'صورة مصغرة', quality: '', url: ogImage.content });
-
-  // Video in page
-  const vSrc = html.match(/https?:\/\/[^"'<> ]+\.mp4[^"'<> ]*/g) || [];
-  vSrc.forEach(u => {
-    if (!items.find(i => i.url === u)) items.push({ type: 'video', label: 'فيديو', quality: 'تحميل مباشر', url: u });
-  });
-
-  return items;
-}
-
-fetchBtn.addEventListener('click', async () => {
-  const url = urlInput.value.trim();
-  if (!url) {
-    showError('الرجاء إدخال رابط سناب شات أولاً');
-    return;
-  }
-
+// ── Main ──
+goBtn.onclick = async () => {
+  const url = urlIn.value.trim();
+  if (!url) { showErr('الرجاء إدخال رابط سناب شات'); return; }
   if (!url.includes('snapchat.com') && !url.includes('snap.com')) {
-    showError('الرابط يجب أن يكون من سناب شات (snapchat.com)');
+    showErr('الرابط يجب أن يكون من سناب شات<br><small>مثال: https://www.snapchat.com/spotlight/...</small>');
     return;
   }
 
-  hideError();
-  results.style.display = 'none';
-  thumbWrap.style.display = 'none';
-  thumbWrap.innerHTML = '';
+  hideErr(); resetLog();
+  resWrap.style.display = 'none';
+  prevWrap.style.display = 'none';
+  prevWrap.innerHTML = '';
   setLoading(true);
 
-  try {
-    let items = [];
+  const methods = [
+    { name: 'SnapSave API',   fn: mSnapsave },
+    { name: 'SnapDL API',     fn: mSnapdl   },
+    { name: 'SaveFrom',       fn: mSavefrom },
+    { name: 'استخراج مباشر', fn: mDirect   },
+  ];
 
-    // Try snapsave first
-    try {
-      items = await fetchMedia(url);
-    } catch {}
+  const logIdxs = methods.map((m, i) => { addLog(`${m.name}...`); return i; });
 
-    // Fallback: direct meta extraction
-    if (!items.length) {
-      try {
-        items = await tryDirectSnap(url);
-      } catch {}
-    }
+  const settled = await Promise.allSettled(methods.map(m => m.fn(url)));
 
-    if (!items.length) {
-      showError('لم نتمكن من استخراج الميديا. تأكد أن الرابط لمحتوى عام، أو جرّب رابطاً آخر.');
+  let all = [];
+  settled.forEach((res, i) => {
+    if (res.status === 'fulfilled' && res.value.length) {
+      setLogSt(logIdxs[i], 'ok');
+      all = [...all, ...res.value];
     } else {
-      // Show first video/image as preview
-      const first = items[0];
-      thumbWrap.innerHTML = '';
-      if (first.type === 'video') {
-        thumbWrap.innerHTML = `<video controls src="${first.url}"></video>`;
-      } else {
-        thumbWrap.innerHTML = `<img src="${first.url}" alt="preview" />`;
-      }
-      thumbWrap.style.display = 'block';
-      showResults(items);
+      setLogSt(logIdxs[i], 'fail');
     }
+  });
 
-  } catch (err) {
-    showError('حدث خطأ: ' + err.message);
-  } finally {
-    setLoading(false);
+  all = dedup(all);
+  setLoading(false);
+
+  if (!all.length) {
+    showErr(`لم نتمكن من استخراج المحتوى 😞<br>
+      <small>• تأكد أن الرابط لمحتوى <strong>عام</strong> (Public)<br>
+      • القصص الخاصة لا يمكن تحميلها<br>
+      • جرّب رابط Spotlight أو بروفايل عام</small>`);
+    return;
   }
-});
 
-urlInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') fetchBtn.click();
-});
+  // Preview first item
+  const first = all[0];
+  prevWrap.innerHTML = first.type === 'video'
+    ? `<video controls autoplay muted playsinline src="${first.url}"></video>`
+    : `<img src="${first.url}" alt="معاينة" />`;
+  prevWrap.style.display = 'block';
+
+  renderResults(all);
+};
 </script>
 </body>
 </html>
